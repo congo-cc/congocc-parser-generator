@@ -1,0 +1,7 @@
+== Bootstrap jars
+
+This directory contains the jarfiles used to bootstrap the congocc build. 
+
+== Eventually, the Congo project will *self-bootstrap*
+
+Eventually (or really at some point not too far off) the congo project will *self-bootstrap*. Thus, instead of of using `freemarker.jar` and `javacc.jar` to bootstrap the build, we will be building using `congo-templates.jar` and `congocc.jar`. In fact, one could consider the first item to complete in our Congo Roadmap.
