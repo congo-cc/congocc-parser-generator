@@ -1,0 +1,50 @@
+<project name="congocc" default="compile" basedir=".">
+    <tstamp>
+        <format property="timestamp" pattern="yyyy-MM-dd HH:mm:ss" />
+    </tstamp>
+    <target name="clean">
+	    <delete dir="src/java/org/congocc/parser"/>
+        <delete dir="src/java/org/congocc/preprocessor"/>
+ 	    <delete dir="build"/>
+    </target>
+    <target name="init">
+        <echo>Join the Discussion forum at: https://discuss.congocc.org/</echo>
+        <echo>Send any bug report to bugs@congocc.org and include the following information.</echo>
+        <echo>JDK Version: ${java.version} on ${os.name}</echo>
+        <uptodate property="parser.uptodate"
+            targetfile="src/java/org/congocc/parser/CongoCCParser.java">
+            <srcfiles dir="src/grammars" includes="*.ccc"/>
+        </uptodate>
+        <uptodate property="preprocessor.uptodate"
+            targetfile="src/java/org/congocc/preprocessor/PreprocessorParser.java"
+            srcfile="src/grammars/Preprocessor.ccc"
+        />
+    </target>
+    <target name="parser-gen" depends="init" unless="parser.uptodate">
+	    <echo>Using Bootstrap JavaCC 21 to regenerate CongoCC parser</echo>
+ 	    <java jar="bootstrap/javacc.jar" fork="true" failonerror="true">
+            <assertions><enable/></assertions>
+ 	        <arg line="-n -q -d ../java src/grammars/CongoCC.ccc"/>
+ 	    </java>
+    </target>
+    <target name="preprocessor-gen" depends="init" unless="preprocessor.uptodate">
+	    <echo>Using Bootstrap JavaCC to regenerate preprocessor</echo>
+ 	    <java jar="bootstrap/javacc.jar" fork="true" failonerror="true">
+            <assertions><enable/></assertions>
+ 	        <arg line="-n -q -d ../../src/java src/grammars/Preprocessor.ccc"/>
+ 	    </java>
+    </target>
+    <target name="compile" depends="parser-gen, preprocessor-gen">
+        <mkdir dir="build"/>
+        <javac srcdir="src/java"
+               destdir="build"
+               deprecation="off"
+               debug="on"
+               optimize="off"
+               includeantruntime="no"
+               failonerror="true"
+               fork="true"
+               target="1.8" source="1.8"
+      />
+    </target>
+</project>
